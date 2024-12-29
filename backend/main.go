@@ -41,6 +41,6 @@ func main() {
 	r.POST("/users", user.AddUser)
 	r.PUT("/users/:id", user.EditUser)
 	r.DELETE("/users/:id", user.DeleteUser)
-
-	r.Run() // listen and serve on default 0.0.0.0:8080
+	// listen and serve on port 8080
+	r.Run(":8080")
 }
