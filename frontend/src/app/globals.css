@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #ffffff; /* Explicitly set background to white */
+  color: #000000; /* Set default text color to black or a dark color for contrast */
+  font-family: Arial, Helvetica, sans-serif;
+}

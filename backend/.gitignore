@@ -1,0 +1,4 @@
+# Go module
+go.sum
+# Database file
+*.db
