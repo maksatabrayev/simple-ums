@@ -19,3 +19,4 @@
    ```
 
 4. Finally, navigate to http://localhost:3000 from your browser.
+   To stop the project press Ctrl + C.
