@@ -53,7 +53,8 @@ func GetUser(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching user"})
-			log.Println("Error fetching user:", err) // Log the actual error for debugging
+			// Loggint the error for debugging purposes
+			log.Println("Error fetching user:", err)
 		}
 		return
 	}
@@ -98,7 +99,7 @@ func EditUser(c *gin.Context) {
 	}
 
 	_, err = db.Exec("UPDATE users SET name = ?, email = ? WHERE id = ?", updatedUser.Name, updatedUser.Email, id)
-	if err != nil { // Assuming 'err' holds the error from your update operation
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Error updating resource.", "error": err.Error()})
 		return
 	}

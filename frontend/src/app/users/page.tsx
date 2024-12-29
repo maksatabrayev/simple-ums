@@ -3,33 +3,66 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserTable from "../components/UserTable";
 import { User } from "../types";
+import API_URL from "../utils/apiConfig";
+import Spinner from "../components/Spinner";
 
 const UsersPage: React.FC = () => {
   const router = useRouter();
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+const [users, setUsers] = useState<User[]>([]);
+const [selectedUser, setSelectedUser] = useState<User | null>(null);
+const [isLoading, setLoading] = useState(false);
 
-  const handleRowClick = (user: User) => {
-    setSelectedUser(user);
+const handleRowClick = (user: User) => {
+  setSelectedUser(user);
+};
+
+useEffect(() => {
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/users`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    fetch("http://localhost:8080/users")
-    .then((response) => response.json())
-    .then((data) => setUsers(data))
-    .catch((error) => console.error("Error fetching users:", error))
-  }, []);
+  fetchUsers();
+}, []);
 
-  const handleNavigation = (action: string) => {
-    if (!selectedUser) return;
-  
-    const route = `/users/${selectedUser.id}?action=${action}`;
-    router.push(route);
-  };
-  
+const handleNavigation = (action: string) => {
+  // if the action is new, navigate to the  user details page without the selected user
+  if (!selectedUser && action == "new") {
+    router.push(`/users/action=${action}`);
+    return;
+  }
+  else if (!selectedUser) {
+    alert("Please select a user to perform this action");
+    return;
+  }
+  // otherwise, navigate to the user details page with the selected user
+  const route = `/users/${selectedUser.id}?action=${action}`;
+  router.push(route);
+};
 
+
+  
+  // Render the spinner if the data is still loading
+  if(isLoading){
+    return <Spinner />;
+  }
+  // Otherwise, render the user details form
   return (
     <div className="flex flex-col h-screen bg-gray-100">
+      <h1 className="text-2xl font-bold text-gray-700 m-4">
+        Select a User to Perform an Action
+      </h1>
       <div className="flex-grow overflow-y-auto px-8 py-4">
         <UserTable users={users} selectedUser={selectedUser} onRowClick={handleRowClick} />
         <div className="mt-4 flex justify-end">
